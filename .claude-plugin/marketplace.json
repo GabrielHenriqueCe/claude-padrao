@@ -1,0 +1,14 @@
+{
+  "name": "claude-padrao",
+  "description": "Regras e skills que o Gabriel usa em todo projeto",
+  "owner": {
+    "name": "Gabriel Henrique Cé"
+  },
+  "plugins": [
+    {
+      "name": "padrao",
+      "source": "./plugins/padrao",
+      "description": "Depurar com método, revisar C# e Clean Architecture, revisar telas"
+    }
+  ]
+}
