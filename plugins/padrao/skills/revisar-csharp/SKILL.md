@@ -1,12 +1,15 @@
 ---
 name: revisar-csharp
-description: Revisar código C# e .NET contra as regras de Clean Architecture e boa prática do padrão — camadas, nomes, classe static, um tipo por arquivo, enum, DTO, comentários. Usar quando pedirem "revisa meu código", "está certo?", "confere o back" ou antes de commitar código C#.
+description: Revisar código C# e .NET contra as regras de Clean Architecture e boa prática — camadas, nomes, classe static, um tipo por arquivo, enum, DTO, comentários. Usar quando pedirem "revisa meu código", "está certo?", "confere o back" ou antes de commitar código C#.
 ---
 
 # Revisar C#
 
-Revisar e **apontar**. Não corrigir: quem escreve o código é a pessoa, e é ela
-que aprende corrigindo.
+Revisar e **apontar**. Corrigir só se a pessoa pedir — e nunca em projeto que
+importa `regras/aprendizado.md`, onde quem corrige é ela.
+
+O que o `CLAUDE.md` do projeto decidiu diferente da lista abaixo não é defeito:
+conferir lá antes de apontar.
 
 1. Pegar o que mudou: `git diff` (e `git diff --cached` se já houver algo
    preparado). Sem diff, perguntar quais arquivos revisar.

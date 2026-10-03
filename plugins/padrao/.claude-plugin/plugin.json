@@ -1,5 +1,6 @@
 {
   "name": "padrao",
+  "version": "1.0.0",
   "description": "Depurar com método, revisar C# e Clean Architecture, revisar telas",
   "author": {
     "name": "Gabriel Henrique Cé"
