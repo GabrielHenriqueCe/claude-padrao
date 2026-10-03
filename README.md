@@ -60,6 +60,11 @@ O `CLAUDE.md` do projeto completa as regras daqui e, quando discorda, ganha. Mas
 ele só ganha onde escreve o contrário: o que o projeto decidiu diferente tem que
 estar escrito lá.
 
+**As lições nascem nos projetos e sobem para cá.** Quando uma regra evoluir
+num projeto e valer para todos, trazer a versão nova para o `padrao.md` no
+mesmo dia — senão as cópias divergem, e nenhuma ferramenta de um projeto
+enxerga este repositório.
+
 **Não enxugar o `CLAUDE.md` do projeto contando com este repositório.** Os
 imports só existem nesta máquina: uma sessão na nuvem ou em outro computador
 não os vê. O global acrescenta; o do projeto continua completo sozinho.

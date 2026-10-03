@@ -1,6 +1,7 @@
 ---
 name: revisar-csharp
-description: Revisar código C# e .NET contra as regras de Clean Architecture e boa prática — camadas, nomes, classe static, um tipo por arquivo, enum, DTO, comentários. Usar quando pedirem "revisa meu código", "está certo?", "confere o back" ou antes de commitar código C#.
+description: Revisar código C# e .NET contra as regras de Clean Architecture e boa prática — camadas, nomes, classe static, um tipo por arquivo, enum, DTO, comentários. Só quando a pessoa pedir: "revisa meu código", "está certo?", "confere o back".
+disable-model-invocation: true
 ---
 
 # Revisar C#

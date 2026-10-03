@@ -26,7 +26,8 @@ discordar delas, ganha.
 - Comando para colar: na sintaxe do terminal da pessoa, um por bloco, e com
   caminho absoluto quando for destrutivo.
 
-O formato da mensagem de commit e o tamanho de cada commit são do projeto.
+O formato da mensagem de commit, o tamanho de cada commit e se o ok do commit
+vale também para o push são do projeto.
 
 ## Código
 
