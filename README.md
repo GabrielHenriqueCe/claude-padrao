@@ -1,19 +1,21 @@
 # claude-padrao
 
-Regras e skills do Claude Code que o Gabriel usa nos projetos pessoais.
+Regras e skills do Claude Code para usar em todo projeto. Cada pessoa junta a
+elas um arquivo pessoal próprio, fora daqui (ver "Instalar numa máquina").
 
 ```
 claude-padrao/
 ├── .claude-plugin/marketplace.json   o catálogo que o Claude Code lê
 ├── regras/
-│   ├── padrao.md                     todo projeto: como trabalhar, Git, nomes, comentários
-│   ├── pessoal.md                    todo projeto: o que é só do Gabriel
+│   ├── padrao.md                     todo projeto: como trabalhar, Git, nomes, comentários, contexto cheio
 │   ├── csharp.md                     quem importar: camadas, static, enum, DTO, web com banco
 │   └── aprendizado.md                quem importar: a pessoa escreve, o Claude orienta em passos
-└── plugins/padrao/skills/
-    ├── depurar/                      método para caçar a causa de um defeito
-    ├── revisar-csharp/               checklist de C# e Clean Architecture
-    └── revisar-interface/            revisão de tela: acessibilidade, foco, animação
+└── plugins/padrao/
+    ├── hooks/contexto.js             avisa o Claude quando o contexto passa de 50%
+    └── skills/
+        ├── depurar/                  método para caçar a causa de um defeito
+        ├── revisar-csharp/           checklist de C# e Clean Architecture
+        └── revisar-interface/        revisão de tela: acessibilidade, foco, animação
 ```
 
 ## Regras e skills chegam por caminhos diferentes
@@ -27,12 +29,17 @@ claude-padrao/
 
 **1. As regras de todo projeto.** Clonar este repositório em
 `C:\Users\<você>\source\repos\` e criar o `C:\Users\<você>\.claude\CLAUDE.md`
-com:
+com o `padrao.md` e, se quiser, um arquivo seu:
 
 ```
 @~/source/repos/claude-padrao/regras/padrao.md
-@~/source/repos/claude-padrao/regras/pessoal.md
+@~/source/repos/<seu-repositorio>/pessoal.md
 ```
+
+O arquivo pessoal é o que vale só para você, por cima do `padrao.md`: como
+prefere aprender, que terminal usa, em que idioma está o seu editor. Fica num
+repositório seu (privado, se preferir), não aqui. Usa um computador só? Pode
+escrever direto no `~/.claude/CLAUDE.md`, abaixo do import.
 
 **2. As skills.**
 
@@ -75,6 +82,31 @@ não os vê. O global acrescenta; o do projeto continua completo sozinho.
 - **Skills:** o plugin tem `version`. Quem instalou só recebe uma mudança quando
   o número muda, então **mudou uma skill, aumentar o `version` no
   `plugin.json`**. Recebe-se com `/plugin marketplace update claude-padrao`.
+
+## O aviso de contexto cheio
+
+O Claude não vê quanto da janela de contexto já usou. O hook `contexto.js` do
+plugin lê o transcript a cada mensagem e, a partir de 50%, diz a ele "Contexto
+em X% da janela de Y". A regra "Contexto cheio" do `padrao.md` diz o que fazer:
+avisar, fechar no ponto de parada, atualizar o arquivo de contexto e sugerir o
+`/clear`, que quem dá é a pessoa.
+
+- Precisa do **Node.js** no PATH. Funciona igual no terminal e no app.
+- A janela sai do modelo que deu a última resposta, então cada sessão mede a
+  sua, e trocar de modelo no meio já muda a conta:
+
+  | Modelo | Janela |
+  |---|---|
+  | Opus e Sonnet 4.6 em diante, Fable | 1M |
+  | Haiku, Opus e Sonnet até a 4.5 | 200k |
+
+  Valores da documentação de modelos (09/2026). Modelo que o hook não conhece
+  conta como 1M. Se o indicador de contexto do app mostrar outra janela,
+  definir `CLAUDE_CONTEXTO_JANELA` (em tokens) no `env` do
+  `~/.claude/settings.json`. O aviso mostra a janela usada, para o erro
+  aparecer.
+- O aviso só chega quando a pessoa manda mensagem: um turno longo e sozinho
+  pode passar de fase sem aviso.
 
 ## A revisão de interface
 
