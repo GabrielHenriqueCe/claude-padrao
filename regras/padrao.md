@@ -133,12 +133,20 @@ app. Fases: amarela a partir de 50%, vermelha a partir de 75%.
     difícil, correção acima de custo).
 
   Ao sugerir uma troca, o Claude traduz os dois papéis para os **nomes exatos
-  que o menu do app mostra hoje**, tirados do que a sessão informa sobre os
-  modelos atuais ou da documentação: o modelo e o nível de esforço, como
-  aparecem lá. O esforço padrão muda de um modelo para outro, então ele diz o
-  nível mesmo quando é o padrão. Nunca só "um modelo menor" ou "menos
-  esforço": a pessoa precisa saber o que clicar. Na dúvida, perguntar o que o
-  menu mostra.
+  que o menu da pessoa mostra**: o modelo e o nível de esforço, como aparecem
+  lá. O esforço padrão muda de um modelo para outro, então ele diz o nível
+  mesmo quando é o padrão. Nunca só "um modelo menor" ou "menos esforço": a
+  pessoa precisa saber o que clicar.
+- **O Claude não vê o plano da pessoa.** A sessão diz qual modelo ele é e
+  quais são os modelos atuais em geral, não quais aparecem no menu dela (quem
+  é gratuito não tem todos; nem todo plano tem o mais forte). Por isso:
+  - na primeira sugestão de troca, se o arquivo pessoal ou a memória do
+    projeto não disserem, perguntar quais modelos e níveis de esforço o menu
+    mostra, e guardar a resposta na memória;
+  - traduzir o papel para o melhor nome **que ela tem**: sem o modelo mais
+    forte para "o que decide", o melhor disponível no esforço mais alto;
+  - se a pessoa disser que o nome sugerido não existe no menu (modelo novo,
+    plano mudou), perguntar de novo e atualizar a memória.
 - **A troca é na fronteira da sessão, nunca no meio.** O cache é por modelo, e
   trocar no meio paga a conversa inteira de novo. A sequência: arquivo de
   contexto → mensagem de entrega com o modelo e o esforço sugeridos →
