@@ -10,7 +10,8 @@ discordar delas, ganha.
 - **O que a pessoa diz é hipótese.** Se tem furo, apontar o furo.
 - **Não atribuir à pessoa uma ideia do Claude.** Ao recapitular, separar "você
   disse" de "eu proponho".
-- **Uma pergunta por vez**, no fim da mensagem, em texto corrido.
+- **Uma pergunta por vez**, no fim da mensagem, em texto corrido. Exceções,
+  com botões: o contexto cheio e a troca de modelo (seções abaixo).
 - **Só o que foi pedido.** Na dúvida, perguntar em uma linha antes de editar.
 - **Verificar o que a mudança alcança**, não tudo.
 - **Texto para colar** (commit, PR, mensagem) vai num bloco só com o conteúdo
@@ -36,6 +37,21 @@ vale também para o push são do projeto.
   Código existente se renomeia só quando a tarefa mexe naquele trecho.
 - **O que varia por fora entra por parâmetro** na regra — o "hoje", o sorteio
   —, nunca `DateTime.Now` ou `Random` lá dentro. A regra fica testável.
+
+### Camadas: cada regra mora num lugar só
+
+- **A tela traduz e não decide.** Estado vira o que se mostra, clique vira
+  chamada de caso de uso, número vira texto. Toda conta que muda o que a
+  pessoa pode fazer (liberado, teto, preço) chega pronta do back, como campo
+  (`canFuse`, `reason`).
+- **Número de regra viaja no dado, nunca escrito direto no front.** O número
+  escrito no front diverge do back sem quebrar nada.
+- **O front desenha o que veio.** Prever com a tabela que o back mandou é
+  desenho; deduzir um fato comparando dois retratos não é: o fato vem do back.
+- **Regra em dois lugares é defeito**, mesmo quando os dois concordam hoje.
+- **Fronteira com o mundo de fora é porta**: disco, rede, tela, sorteio,
+  relógio. Interface com um implementador só vale quando é costura de verdade;
+  fora disso, classe concreta.
 
 ### Comentário
 
@@ -103,3 +119,39 @@ app. Fases: amarela a partir de 50%, vermelha a partir de 75%.
   Ela termina sugerindo o `/clear`. **Quem limpa é a pessoa, nunca o Claude**:
   tela limpa sem essa mensagem deixa ela sem saber o que foi feito nem o que
   falta.
+
+## Trocar de modelo ou de esforço
+
+- **O Claude não troca o próprio modelo nem o esforço.** O app recusa: uma
+  sessão não pode mudar o preço dos próprios turnos. Quem troca é a pessoa, no
+  menu do app.
+- **As regras falam em papel, o Claude dá o nome.** Aqui e nos arquivos de
+  regra, modelo e esforço são papéis, porque os nomes mudam com o tempo:
+  - **modelo:** "o que decide" (desenho, diagnóstico, defeito difícil), "o que
+    executa" (plano já aprovado), "o leve" (tarefa mecânica, sem escolha);
+  - **esforço:** "pouco" (tarefa mecânica), "normal", "o máximo" (decisão
+    difícil, correção acima de custo).
+
+  Ao sugerir uma troca, o Claude traduz os dois papéis para os **nomes exatos
+  que o menu do app mostra hoje**, tirados do que a sessão informa sobre os
+  modelos atuais ou da documentação: o modelo e o nível de esforço, como
+  aparecem lá. O esforço padrão muda de um modelo para outro, então ele diz o
+  nível mesmo quando é o padrão. Nunca só "um modelo menor" ou "menos
+  esforço": a pessoa precisa saber o que clicar. Na dúvida, perguntar o que o
+  menu mostra.
+- **A troca é na fronteira da sessão, nunca no meio.** O cache é por modelo, e
+  trocar no meio paga a conversa inteira de novo. A sequência: arquivo de
+  contexto → mensagem de entrega com o modelo e o esforço sugeridos →
+  `/clear` → menu → a sessão nova lê o arquivo de contexto. Modelo de janela
+  menor só depois do `/clear`.
+- **O Claude avisa nos dois sentidos, só quando o passo muda:** baixar quando a
+  próxima tarefa é simples, subir quando a simples acabou e a próxima pede
+  decisão. Nunca a cada resposta: aviso repetido ensina a ignorar.
+- **Plano em passos (quando houver):** cada passo sai com o modelo e o esforço
+  dele, no plano e no arquivo de contexto. Ao entrar num passo cuja indicação
+  difere da sessão atual, o Claude pede a troca no fim da mensagem, com botões:
+  "Parar aqui e trocar para X · esforço Y" ou "Continuar como está". Onde não
+  houver botões, uma linha em negrito e as duas opções numeradas.
+- **O passo no arquivo de contexto traz o que o leve precisa** para
+  seguir sem a conversa: o arquivo, o método, o que fica pronto no fim, e o
+  que não é dele decidir (aí ele para e pede o que decide).

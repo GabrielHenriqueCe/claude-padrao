@@ -13,6 +13,12 @@ tarefa do momento.
 
 - **Regra de negócio no domínio**, como método da entidade. Nunca no DTO, no
   controller nem na tela.
+- **A Application é a ordem e o registro.** Chama a regra, grava, chama as
+  portas. Um `if` ali decide ordem ou persistência; um `if` que decide o
+  negócio é regra fora de casa. Teste: um teste só do Domain pegaria o defeito
+  desta linha? Então ela é do Domain.
+- **Um service, um assunto, numa frase.** Se a frase precisa de "e" duas
+  vezes, são dois services.
 - **Evitar classe `static`.** Se parece precisar, está no lugar errado: valor
   fixo é `enum`, regra é método da entidade, comportamento é serviço injetado.
   Exceção: métodos de extensão.
