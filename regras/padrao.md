@@ -85,8 +85,11 @@ código segue três passos (papéis de modelo e esforço: §Trocar de modelo).
    própria sessão do código: passo de esforço "pouco" (mecânico) e correção
    pequena com a causa já diagnosticada.
 2. **Código, no modelo e esforço do passo.** Se forem os do plano, segue na
-   mesma sessão; se não, arquivo de contexto, `/clear`, troca, e a sessão nova
-   executa. **Quem executa não redesenha:** o que o plano não cobre, ou um
+   mesma sessão. Se não, e a ferramenta de sessões existir, a sessão abre uma
+   filha já no modelo do passo, com o plano fechado no brief (§Sessão
+   principal e filhas). Sem a ferramenta (nuvem, outro cliente): arquivo de
+   contexto, `/clear`, troca, e a sessão nova executa. **Quem executa não
+   redesenha:** o que o plano não cobre, ou um
    caminho que pareça melhor, é parar e perguntar.
 3. **Conferência antes de mostrar o diff:** a mesma tabela, agora sobre o
    diff, na mensagem à pessoa. O que dá para corrigir, corrige antes de
@@ -188,10 +191,11 @@ app. Fases: amarela a partir de 50%, vermelha a partir de 75%.
   - se a pessoa disser que o nome sugerido não existe no menu (modelo novo,
     plano mudou), perguntar de novo e atualizar a memória.
 - **A troca é na fronteira da sessão, nunca no meio.** O cache é por modelo, e
-  trocar no meio paga a conversa inteira de novo. A sequência: arquivo de
-  contexto → mensagem de entrega com o modelo e o esforço sugeridos →
-  `/clear` → menu → a sessão nova lê o arquivo de contexto. Modelo de janela
-  menor só depois do `/clear`.
+  trocar no meio paga a conversa inteira de novo. Com a ferramenta de
+  sessões, a troca é uma filha (§Sessão principal e filhas). Sem ela, a
+  sequência: arquivo de contexto → mensagem de entrega com o modelo e o
+  esforço sugeridos → `/clear` → menu → a sessão nova lê o arquivo de
+  contexto. Modelo de janela menor só depois do `/clear`.
 - **O Claude avisa nos dois sentidos, só quando o passo muda:** baixar quando a
   próxima tarefa é simples, subir quando a simples acabou e a próxima pede
   decisão. Nunca a cada resposta: aviso repetido ensina a ignorar.
@@ -203,3 +207,30 @@ app. Fases: amarela a partir de 50%, vermelha a partir de 75%.
 - **O passo no arquivo de contexto traz o que o leve precisa** para
   seguir sem a conversa: o arquivo, o método, o que fica pronto no fim, e o
   que não é dele decidir (aí ele para e pede o que decide).
+
+## Sessão principal e filhas
+
+Onde existe a ferramenta de abrir sessões, a pessoa conversa com uma sessão só,
+e o código de cada passo vai para uma filha no modelo do passo.
+
+- **A principal fica no "o que decide" · "o máximo".** Ela planeja com a
+  pessoa, decide e confere. Só leva `/clear` quando fecha uma etapa ou quando
+  o contexto enche (§Contexto cheio).
+- **A filha abre já no modelo e esforço do passo**, com tudo no brief, porque
+  começa sem a conversa: o plano fechado (arquivos, métodos, costuras pelo
+  nome, testes, sabotagem, a conferência) e a instrução "pare no diff e em
+  toda decisão; responda à sessão principal, não à pessoa". O plano inteiro
+  fica só no brief.
+- **A linha da filha entra no arquivo de contexto quando ela abre**, não só no
+  fechamento: id ou nome, passo, branch e estado (rodando, parada no diff,
+  parada em decisão). É o `/clear` forçado, de contexto cheio, que pega a filha
+  no meio; sem a linha, a sessão nova nem sabe que ela existe.
+- **A filha para no diff e em toda decisão.** A parada volta para a principal,
+  que leva a pergunta à pessoa e devolve a resposta. A pessoa não responde nas
+  filhas. Filha no "o leve" que topa com uma decisão para, não decide.
+- **Enquanto a filha roda, a principal não edita arquivo naquele checkout**,
+  só lê. Duas filhas ao mesmo tempo, só em árvores de trabalho separadas, e
+  isso é decisão do projeto, não deste padrão.
+- **Antes de dizer que o passo está pronto, a principal confere o diff da
+  filha contra o plano** (a conferência do §Plano antes do código). Passo
+  mergeado: ela arquiva a filha e tira a linha do arquivo de contexto.
