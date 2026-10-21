@@ -66,6 +66,46 @@ vale também para o push são do projeto.
 Armadilha ativa nunca se corta: o que quebra em silêncio se alguém "melhorar"
 o código. Explicação didática vai na conversa, não no arquivo.
 
+## Plano antes do código
+
+Erro de desenho é barato no plano e caro no diff. Toda sessão que mexe em
+código segue três passos (papéis de modelo e esforço: §Trocar de modelo).
+
+1. **Plano, no "o que decide" · "o máximo".** Em texto curto:
+   - o que muda e em que arquivo;
+   - onde mora cada regra nova (camada, classe, método) e a costura que ela
+     usa, pelo nome;
+   - os testes, e a sabotagem que tem de derrubá-los (mudar o código de
+     propósito e ver o teste ficar vermelho);
+   - a conferência abaixo, respondida sobre o plano.
+
+   A pessoa valida, e só então se coda. O plano validado vai para o arquivo
+   de contexto **fechado**: nenhuma decisão aberta, toda costura nomeada. É
+   isso que deixa um modelo menor executar sozinho. Exceções, que planejam na
+   própria sessão do código: passo de esforço "pouco" (mecânico) e correção
+   pequena com a causa já diagnosticada.
+2. **Código, no modelo e esforço do passo.** Se forem os do plano, segue na
+   mesma sessão; se não, arquivo de contexto, `/clear`, troca, e a sessão nova
+   executa. **Quem executa não redesenha:** o que o plano não cobre, ou um
+   caminho que pareça melhor, é parar e perguntar.
+3. **Conferência antes de mostrar o diff:** a mesma tabela, agora sobre o
+   diff, na mensagem à pessoa. O que dá para corrigir, corrige antes de
+   mostrar; o que pede decisão, para e pergunta.
+
+**A conferência:** cada linha ✅ ou ❌, com o porquê numa frase.
+
+| Pergunta | ❌ quando |
+|---|---|
+| Um teste só da camada de regra pega cada regra nova? | ela depende de um `if` na orquestração ou na tela |
+| Algum `if` fora da camada de regra decide o que acontece? | decide algo além de ordem, persistência ou desenho |
+| A mesma regra mora em dois lugares? | há duas cópias, ou dois "espelhos" em camadas diferentes |
+| O front recebe pronto? | há número de regra escrito no front, ou fato deduzido comparando retratos |
+| A fronteira com o mundo de fora é porta? | relógio, sorteio, disco ou rede são chamados direto na regra |
+| Segue o desenho do plano? | trocou o mecanismo, ou usou costura que o plano não nomeia |
+| O que a documentação promete tem teste, e a sabotagem derrubou? | há frase sem teste, ou sabotagem que passou verde |
+
+O projeto acrescenta as perguntas do vocabulário dele.
+
 ## Contexto cheio: fechar, entregar e a pessoa limpa
 
 O Claude não vê quanto da janela de contexto já usou: o número de tokens que
