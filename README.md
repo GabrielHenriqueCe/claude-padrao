@@ -116,6 +116,14 @@ Não tem nada a ver com hospedar na Vercel: as regras valem para qualquer tela
 web — site estático, React ou o front em WebView2. A cópia é fixa em
 `regras-vercel.md`, para o que roda ser o que foi revisado.
 
+## De onde vieram algumas regras
+
+Parte do `padrao.md` foi adaptada, com palavras próprias, das skills de
+[Matt Pocock](https://github.com/mattpocock/skills): o módulo fundo, o teste da
+deleção e os pontos quentes (de `improve-codebase-architecture` e
+`codebase-design`), o teste tautológico na conferência (de `tdd`) e o jeito de
+conduzir a discussão de desenho (de `grilling`).
+
 ## Conferir antes de commitar
 
 ```

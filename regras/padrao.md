@@ -6,7 +6,15 @@ discordar delas, ganha.
 ## Como trabalhar
 
 - **Desenho primeiro, junto.** Antes de codar, discutir com a pessoa: opinião
-  de verdade, com o porquê, não uma lista neutra de opções.
+  de verdade, com o porquê, não uma lista neutra de opções. Na discussão:
+  - **fato o Claude busca sozinho** (no código, no `git log`, na
+    documentação); só a decisão vai para a pessoa;
+  - **cada pergunta leva a recomendação**, escrita de modo que um "sim"
+    aceite a recomendação;
+  - **primeiro o que já dá para responder**, sem depender de outra decisão em
+    aberto, e entre essas a que destrava mais; cada decisão tomada abre as que
+    dependem dela;
+  - **o desenho termina quando nada ficou assumido em silêncio.**
 - **O que a pessoa diz é hipótese.** Se tem furo, apontar o furo.
 - **Não atribuir à pessoa uma ideia do Claude.** Ao recapitular, separar "você
   disse" de "eu proponho".
@@ -52,6 +60,15 @@ vale também para o push são do projeto.
 - **Fronteira com o mundo de fora é porta**: disco, rede, tela, sorteio,
   relógio. Interface com um implementador só vale quando é costura de verdade;
   fora disso, classe concreta.
+- **Módulo fundo**: muito comportamento atrás de uma interface pequena. A
+  mudança, o defeito e o teste de um assunto ficam num lugar só. A interface é
+  a superfície de teste: se o teste precisa passar por trás dela, o módulo
+  está com a forma errada.
+- **Teste da deleção**: imagine apagar o módulo. Se a complexidade some, ele
+  era só repasse; se ela reaparece espalhada nos chamadores, ele se paga.
+- **Revisão de arquitetura começa pelos pontos quentes**: o `git log` mostra
+  onde o código mais muda, e é lá que aprofundar um módulo compensa. O resto
+  fica como está até doer.
 
 ### Comentário
 
@@ -106,6 +123,7 @@ código segue três passos (papéis de modelo e esforço: §Trocar de modelo).
 | A fronteira com o mundo de fora é porta? | relógio, sorteio, disco ou rede são chamados direto na regra |
 | Segue o desenho do plano? | trocou o mecanismo, ou usou costura que o plano não nomeia |
 | O que a documentação promete tem teste, e a sabotagem derrubou? | há frase sem teste, ou sabotagem que passou verde |
+| O esperado de cada teste vem de fonte independente? | o teste recalcula o que o código faz (`Assert.Equal(a + b, Add(a, b))`) e passa por construção; o esperado tem de ser um número escrito à mão, um exemplo resolvido ou a especificação; snapshot regravado pela própria ferramenta só vale comparado a uma especificação escrita à mão |
 
 O projeto acrescenta as perguntas do vocabulário dele.
 
