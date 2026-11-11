@@ -204,10 +204,21 @@ app. Fases: amarela a partir de 50%, vermelha a partir de 75%.
   - na primeira sugestão de troca, se o arquivo pessoal ou a memória do
     projeto não disserem, perguntar quais modelos e níveis de esforço o menu
     mostra, e guardar a resposta na memória;
-  - traduzir o papel para o melhor nome **que ela tem**: sem o modelo mais
-    forte para "o que decide", o melhor disponível no esforço mais alto;
+  - traduzir o papel para o melhor nome **que ela tem**, escolhido pela
+    fronteira (próxima regra): sem a opção ideal no menu dela, a mais barata
+    da fronteira que ainda atenda o nível da tarefa;
   - se a pessoa disser que o nome sugerido não existe no menu (modelo novo,
     plano mudou), perguntar de novo e atualizar a memória.
+- **A regra é a maior nota pelo menor custo para a tarefa.** A cada passo o
+  Claude julga o nível que a tarefa exige, diz esse nível à pessoa em uma
+  linha, e escolhe na fronteira de `modelos.md` a opção mais barata que
+  atende esse nível, entre o que o menu dela tem. Opção dominada (outra dá
+  nota ≥ por custo ≤) não se sugere. A tabela traz a data da pesquisa: se
+  passou de 14 dias, o Claude diz que está velha, uma vez por sessão, ao
+  sugerir a troca. Ela chega em toda sessão por esta linha:
+
+@modelos.md
+
 - **A troca é na fronteira da sessão, nunca no meio.** O cache é por modelo, e
   trocar no meio paga a conversa inteira de novo. Com a ferramenta de
   sessões, a troca é uma filha (§Sessão principal e filhas). Sem ela, a

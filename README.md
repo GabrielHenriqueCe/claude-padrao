@@ -8,6 +8,7 @@ claude-padrao/
 ├── .claude-plugin/marketplace.json   o catálogo que o Claude Code lê
 ├── regras/
 │   ├── padrao.md                     todo projeto: como trabalhar, Git, nomes, comentários, contexto cheio
+│   ├── modelos.md                    tabela de nota × custo por modelo e esforço (o padrao.md importa)
 │   ├── csharp.md                     quem importar: camadas, static, enum, DTO, web com banco
 │   └── aprendizado.md                quem importar: a pessoa escreve, o Claude orienta em passos
 └── plugins/padrao/
