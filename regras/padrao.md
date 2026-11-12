@@ -38,6 +38,23 @@ discordar delas, ganha.
 O formato da mensagem de commit, o tamanho de cada commit e se o ok do commit
 vale também para o push são do projeto.
 
+## Skills que chegam de fora
+
+Plugins e skills instalados no nível do usuário chegam a todo projeto. Cada
+projeto escolhe as suas.
+
+- **Na primeira sessão em que uma skill nova aparece**, o Claude confere se
+  ela serve ao projeto e propõe à pessoa o que bloquear, com o motivo numa
+  linha. Exemplos: o projeto tem a própria versão da skill; a skill é de uma
+  ferramenta que o projeto não usa; ela traz um hook que o projeto não quer.
+- **O bloqueio mora no `.claude/settings.json` do projeto**, em
+  `permissions.deny`: `Skill(nome)`, ou `Skill(plugin:*)` para o plugin
+  inteiro. Mudar permissão pede o ok da pessoa naquele projeto.
+- **O bloqueio recusa a chamada, mas a skill continua na lista.** Por isso o
+  `CLAUDE.md` do projeto diz, numa linha, qual usar quando duas tratam do
+  mesmo assunto (a do projeto ou a do plugin). Sem essa linha, o Claude tenta
+  a bloqueada e só descobre na recusa.
+
 ## Código
 
 - **Nome diz o que é** no código novo. Nada de letra solta, sigla ou
