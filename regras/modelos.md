@@ -1,6 +1,6 @@
 # Modelos: nota × custo
 
-**Pesquisa de 11/11/2026.** Nota: Artificial Analysis Intelligence Index. Custo:
+**Pesquisa de 18/11/2026.** Nota: Artificial Analysis Intelligence Index. Custo:
 US$ por tarefa. Cada célula é nota · custo. **Negrito** = na fronteira;
 ✗ = dominada (outra opção dá nota ≥ por custo ≤: nunca sugerir).
 
