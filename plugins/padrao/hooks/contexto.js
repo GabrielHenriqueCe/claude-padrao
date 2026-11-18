@@ -2,7 +2,7 @@
 //
 // O Claude não vê esse número: o que chega até ele é o saldo de tokens da sessão, e conta
 // feita sobre o saldo erra. Este hook lê o transcript, pega o uso da última resposta e, a
-// partir de 50%, injeta o número na conversa. A regra "Contexto cheio" do padrao.md diz o
+// partir de 50%, injeta o número na conversa. A skill fechar-sessao, deste plugin, diz o
 // que fazer com ele.
 //
 // A janela não vem na entrada do hook, então sai do modelo da última resposta, que cada
@@ -89,7 +89,7 @@ function main() {
 
     const fase = porcentagem >= VERMELHA ? 'vermelha' : 'amarela';
     const aviso = `Contexto em ${porcentagem}% da janela de ${rotulo(janela)} `
-                + `(fase ${fase}). Seguir a regra "Contexto cheio" do padrao.md.`;
+                + `(fase ${fase}). Usar a skill padrao:fechar-sessao.`;
 
     process.stdout.write(JSON.stringify({
         hookSpecificOutput: { hookEventName: 'UserPromptSubmit', additionalContext: aviso },

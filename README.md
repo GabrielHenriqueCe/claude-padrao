@@ -7,8 +7,8 @@ elas um arquivo pessoal próprio, fora daqui (ver "Instalar numa máquina").
 claude-padrao/
 ├── .claude-plugin/marketplace.json   o catálogo que o Claude Code lê
 ├── regras/
-│   ├── padrao.md                     todo projeto: como trabalhar, Git, nomes, comentários, contexto cheio
-│   ├── modelos.md                    tabela de nota × custo por modelo e esforço (o padrao.md importa)
+│   ├── padrao.md                     todo projeto: como trabalhar, Git, o que entra em toda sessão, código, plano
+│   ├── modelos.md                    tabela de nota × custo por modelo e esforço (a skill trocar-modelo lê)
 │   ├── csharp.md                     quem importar: camadas, static, enum, DTO, web com banco
 │   └── aprendizado.md                quem importar: a pessoa escreve, o Claude orienta em passos
 └── plugins/padrao/
@@ -16,8 +16,15 @@ claude-padrao/
     └── skills/
         ├── depurar/                  método para caçar a causa de um defeito
         ├── revisar-csharp/           checklist de C# e Clean Architecture
-        └── revisar-interface/        revisão de tela: acessibilidade, foco, animação
+        ├── revisar-interface/        revisão de tela: acessibilidade, foco, animação
+        ├── fechar-sessao/            contexto cheio: avisar, parar, arquivo de contexto, entrega
+        ├── trocar-modelo/            sugerir modelo e esforço pela fronteira de nota × custo
+        └── sessao-filha/             o código de um passo numa sessão filha
 ```
+
+O `padrao.md` guarda só o que vale em toda sessão, porque ele é relido a cada
+resposta. O que só vale numa situação mora numa skill, que carrega quando a
+situação chega.
 
 ## Regras e skills chegam por caminhos diferentes
 
@@ -51,8 +58,9 @@ claude plugin marketplace add GabrielHenriqueCe/claude-padrao
 claude plugin install padrao@claude-padrao
 ```
 
-Ficam como `/padrao:depurar`, `/padrao:revisar-csharp` e
-`/padrao:revisar-interface`, e o Claude também as usa sozinho quando a tarefa é
+Ficam como `/padrao:depurar`, `/padrao:revisar-csharp`,
+`/padrao:revisar-interface`, `/padrao:fechar-sessao`, `/padrao:trocar-modelo`
+e `/padrao:sessao-filha`, e o Claude também as usa sozinho quando a tarefa é
 do assunto.
 
 ## Num projeto
@@ -73,9 +81,10 @@ num projeto e valer para todos, trazer a versão nova para o `padrao.md` no
 mesmo dia — senão as cópias divergem, e nenhuma ferramenta de um projeto
 enxerga este repositório.
 
-**Não enxugar o `CLAUDE.md` do projeto contando com este repositório.** Os
-imports só existem nesta máquina: uma sessão na nuvem ou em outro computador
-não os vê. O global acrescenta; o do projeto continua completo sozinho.
+**Projeto solo nesta máquina: o `CLAUDE.md` não repete o padrão.** Cada
+linha repetida é relida em toda resposta. **Projeto de equipe, ou que roda na
+nuvem ou em outro computador: o `CLAUDE.md` fica completo sozinho**, sem
+`@~/`, porque os imports só existem nesta máquina.
 
 ## Atualizar
 
@@ -88,9 +97,9 @@ não os vê. O global acrescenta; o do projeto continua completo sozinho.
 
 O Claude não vê quanto da janela de contexto já usou. O hook `contexto.js` do
 plugin lê o transcript a cada mensagem e, a partir de 50%, diz a ele "Contexto
-em X% da janela de Y". A regra "Contexto cheio" do `padrao.md` diz o que fazer:
-avisar, fechar no ponto de parada, atualizar o arquivo de contexto e sugerir o
-`/clear`, que quem dá é a pessoa.
+em X% da janela de Y" e manda usar a skill `fechar-sessao`, que diz o que
+fazer: avisar, fechar no ponto de parada, atualizar o arquivo de contexto e
+sugerir o `/clear`, que quem dá é a pessoa.
 
 - Precisa do **Node.js** no PATH. Funciona igual no terminal e no app.
 - A janela sai do modelo que deu a última resposta, então cada sessão mede a

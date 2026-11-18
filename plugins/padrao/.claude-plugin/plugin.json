@@ -1,7 +1,7 @@
 {
   "name": "padrao",
-  "version": "1.2.0",
-  "description": "Depurar com método, revisar C# e Clean Architecture, revisar telas, avisar quando o contexto enche",
+  "version": "1.3.0",
+  "description": "Depurar com método, revisar C# e telas, avisar quando o contexto enche e fechar a sessão, trocar de modelo, abrir sessão filha",
   "author": {
     "name": "Gabriel Henrique Cé"
   }
