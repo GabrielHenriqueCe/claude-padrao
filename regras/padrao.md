@@ -59,7 +59,9 @@ O que fica ali paga em toda resposta, e sessão longa paga mais do que tudo.
   completo sozinho e sem `@~/`, porque o import só existe aqui.
 - **Saída enxuta nos comandos**: pedir só o que a decisão precisa
   (`dotnet build -v q -clp:ErrorsOnly`, `dotnet test --nologo -v q`). A saída
-  inteira fica no contexto até o fim da sessão.
+  inteira fica no contexto até o fim da sessão. O `ErrorsOnly` esconde
+  warning: regra que tem de ser vista vira erro no `.editorconfig`, ou o
+  build roda sem ele quando o assunto é o aviso.
 - **Skill, plugin e conector no nível do usuário só se servem a todo
   projeto.** O que é de um tipo de projeto liga no projeto: o plugin fica
   desligado no usuário e o projeto o liga em `enabledPlugins`, no
