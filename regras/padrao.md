@@ -1,7 +1,9 @@
 # Regras padrão
 
 Valem em todo projeto. O `CLAUDE.md` do projeto completa estas regras e, quando
-discordar delas, ganha.
+discordar delas, ganha. O que só vale numa situação mora numa skill do plugin
+`padrao` e carrega quando a situação chega: `fechar-sessao`, `trocar-modelo`,
+`sessao-filha`.
 
 ## Como trabalhar
 
@@ -12,14 +14,13 @@ discordar delas, ganha.
   - **cada pergunta leva a recomendação**, escrita de modo que um "sim"
     aceite a recomendação;
   - **primeiro o que já dá para responder**, sem depender de outra decisão em
-    aberto, e entre essas a que destrava mais; cada decisão tomada abre as que
-    dependem dela;
+    aberto, e entre essas a que destrava mais;
   - **o desenho termina quando nada ficou assumido em silêncio.**
 - **O que a pessoa diz é hipótese.** Se tem furo, apontar o furo.
 - **Não atribuir à pessoa uma ideia do Claude.** Ao recapitular, separar "você
   disse" de "eu proponho".
 - **Uma pergunta por vez**, no fim da mensagem, em texto corrido. Exceções,
-  com botões: o contexto cheio e a troca de modelo (seções abaixo).
+  com botões: o contexto cheio e a troca de modelo.
 - **Só o que foi pedido.** Na dúvida, perguntar em uma linha antes de editar.
 - **Verificar o que a mudança alcança**, não tudo.
 - **Texto para colar** (commit, PR, mensagem) vai num bloco só com o conteúdo
@@ -34,26 +35,49 @@ discordar delas, ganha.
 - Nunca propor desfazer o que a pessoa já executou sem perguntar antes.
 - Comando para colar: na sintaxe do terminal da pessoa, um por bloco, e com
   caminho absoluto quando for destrutivo.
+- **Segredo não entra no Git.** Onde o projeto guarda segredo de verdade
+  (token, connection string, chave de JWT), o hook de pre-commit do projeto
+  chama o `gitleaks`. O hook é o *quando*; o `gitleaks` é o *quê*, porque
+  reconhece centenas de formatos de chave. Sem segredo no projeto, sem hook.
 
 O formato da mensagem de commit, o tamanho de cada commit e se o ok do commit
 vale também para o push são do projeto.
 
-## Skills que chegam de fora
+## O que entra em toda sessão
 
-Plugins e skills instalados no nível do usuário chegam a todo projeto. Cada
-projeto escolhe as suas.
+Cada resposta relê a conversa inteira, e mais o que carrega sozinho: este
+arquivo, o `CLAUDE.md`, o índice da memória, a lista de skills, os conectores.
+O que fica ali paga em toda resposta, e sessão longa paga mais do que tudo.
 
-- **Na primeira sessão em que uma skill nova aparece**, o Claude confere se
-  ela serve ao projeto e propõe à pessoa o que bloquear, com o motivo numa
-  linha. Exemplos: o projeto tem a própria versão da skill; a skill é de uma
-  ferramenta que o projeto não usa; ela traz um hook que o projeto não quer.
-- **O bloqueio mora no `.claude/settings.json` do projeto**, em
-  `permissions.deny`: `Skill(nome)`, ou `Skill(plugin:*)` para o plugin
-  inteiro. Mudar permissão pede o ok da pessoa naquele projeto.
-- **O bloqueio recusa a chamada, mas a skill continua na lista.** Por isso o
-  `CLAUDE.md` do projeto diz, numa linha, qual usar quando duas tratam do
-  mesmo assunto (a do projeto ou a do plugin). Sem essa linha, o Claude tenta
-  a bloqueada e só descobre na recusa.
+- **Uma sessão por assunto.** Assunto novo, sessão nova: a velha relê o que
+  não serve mais.
+- **Arquivo de contexto curto**: estado, pendente e próximo passo, por volta
+  de 5 KB. A história vai para a mensagem de commit; o plano detalhado de um
+  assunto, para um documento dele, lido quando o assunto voltar.
+- **O `CLAUDE.md` do projeto não repete este arquivo**: escreve só o que é do
+  projeto. Exceção: projeto de equipe, ou que roda fora desta máquina, fica
+  completo sozinho e sem `@~/`, porque o import só existe aqui.
+- **Saída enxuta nos comandos**: pedir só o que a decisão precisa
+  (`dotnet build -v q -clp:ErrorsOnly`, `dotnet test --nologo -v q`). A saída
+  inteira fica no contexto até o fim da sessão. O `ErrorsOnly` esconde
+  warning: regra que tem de ser vista vira erro no `.editorconfig`, ou o
+  build roda sem ele quando o assunto é o aviso.
+- **Skill, plugin e conector no nível do usuário só se servem a todo
+  projeto.** O que é de um tipo de projeto liga no projeto: o plugin fica
+  desligado no usuário e o projeto o liga em `enabledPlugins`, no
+  `.claude/settings.json`; a skill avulsa vai para o `.claude/skills/` do
+  projeto. Conector do claude.ai, no app desktop, não se desliga por projeto:
+  o que não serve à maioria fica desligado por padrão, e liga na sessão que
+  precisa.
+- **O deny recusa a chamada, mas a skill continua na lista** (e no custo).
+  Quando duas tratam do mesmo assunto, o `CLAUDE.md` do projeto diz, numa
+  linha, qual usar.
+- **Mudar permissão ou `enabledPlugins` pede o ok da pessoa naquele projeto.**
+- **Skill de terceiro, antes de instalar:** ler o que ela faz, rodar o
+  `skill-scanner` e conferir à mão cada coisa que ele acusa.
+- **Contexto passou de 50%, a conversa recomeçou de um resumo automático, ou
+  a etapa acabou:** skill `padrao:fechar-sessao`. O hook `contexto.js` do
+  plugin avisa a porcentagem; o Claude sozinho não vê.
 
 ## Código
 
@@ -100,10 +124,24 @@ projeto escolhe as suas.
 Armadilha ativa nunca se corta: o que quebra em silêncio se alguém "melhorar"
 o código. Explicação didática vai na conversa, não no arquivo.
 
+## Modelo e esforço
+
+As regras falam em papel, porque os nomes mudam com o tempo:
+
+- **modelo:** "o que decide" (desenho, diagnóstico, defeito difícil), "o que
+  executa" (plano já aprovado), "o leve" (tarefa mecânica, sem escolha). **O
+  leve nunca decide:** topou com uma decisão, para e pede a troca;
+- **esforço:** "pouco" (tarefa mecânica), "normal", "o máximo" (decisão
+  difícil, correção acima de custo).
+
+O Claude não troca o próprio modelo nem o esforço: quem troca é a pessoa, no
+menu. Quando o passo muda de nível, ou ao montar um plano em passos, ele sugere
+a troca pela skill `padrao:trocar-modelo`, que traz a tabela de nota × custo.
+
 ## Plano antes do código
 
 Erro de desenho é barato no plano e caro no diff. Toda sessão que mexe em
-código segue três passos (papéis de modelo e esforço: §Trocar de modelo).
+código segue três passos.
 
 1. **Plano, no "o que decide" · "o máximo".** Em texto curto:
    - o que muda e em que arquivo;
@@ -119,12 +157,11 @@ código segue três passos (papéis de modelo e esforço: §Trocar de modelo).
    própria sessão do código: passo de esforço "pouco" (mecânico) e correção
    pequena com a causa já diagnosticada.
 2. **Código, no modelo e esforço do passo.** Se forem os do plano, segue na
-   mesma sessão. Se não, e a ferramenta de sessões existir, a sessão abre uma
-   filha já no modelo do passo, com o plano fechado no brief (§Sessão
-   principal e filhas). Sem a ferramenta (nuvem, outro cliente): arquivo de
-   contexto, `/clear`, troca, e a sessão nova executa. **Quem executa não
-   redesenha:** o que o plano não cobre, ou um
-   caminho que pareça melhor, é parar e perguntar.
+   mesma sessão. Se não, e a ferramenta de sessões existir, o código vai para
+   uma sessão filha já no modelo do passo (skill `padrao:sessao-filha`). Sem a
+   ferramenta: arquivo de contexto, `/clear`, troca, e a sessão nova executa.
+   **Quem executa não redesenha:** o que o plano não cobre, ou um caminho que
+   pareça melhor, é parar e perguntar.
 3. **Conferência antes de mostrar o diff:** a mesma tabela, agora sobre o
    diff, na mensagem à pessoa. O que dá para corrigir, corrige antes de
    mostrar; o que pede decisão, para e pergunta.
@@ -143,140 +180,3 @@ código segue três passos (papéis de modelo e esforço: §Trocar de modelo).
 | O esperado de cada teste vem de fonte independente? | o teste recalcula o que o código faz (`Assert.Equal(a + b, Add(a, b))`) e passa por construção; o esperado tem de ser um número escrito à mão, um exemplo resolvido ou a especificação; snapshot regravado pela própria ferramenta só vale comparado a uma especificação escrita à mão |
 
 O projeto acrescenta as perguntas do vocabulário dele.
-
-## Contexto cheio: fechar, entregar e a pessoa limpa
-
-O Claude não vê quanto da janela de contexto já usou: o número de tokens que
-chega até ele é o saldo da sessão, não a janela, e conta feita sobre ele erra.
-Quem mede é o hook `contexto.js` do plugin `padrao`: a cada mensagem da
-pessoa, a partir de 50%, ele põe na conversa "Contexto em X% da janela de
-Yk". Sem o plugin, quem avisa é a pessoa, olhando o indicador de contexto do
-app. Fases: amarela a partir de 50%, vermelha a partir de 75%.
-
-- **Fase amarela**: dizer à pessoa, numa linha no começo da resposta, em
-  quantos % o contexto está, e de qual janela: na primeira vez que a fase
-  aparecer, e de novo só quando ela mudar. Se a pessoa disser que o
-  indicador do app mostra outra janela, o aviso está errado: dizer que ela
-  corrige com `CLAUDE_CONTEXTO_JANELA` no `env` do `~/.claude/settings.json`.
-  Daí em diante, seguir a tarefa até o próximo ponto de parada, sem abrir
-  assunto novo.
-- **Fase vermelha**: avisar numa mensagem própria, com o número, e **perguntar
-  com botões** (a ferramenta de pergunta com opções, exceção ao "texto
-  corrido"): "Parar no ponto mais próximo e entregar" ou "Terminar a tarefa
-  antes". Onde a ferramenta não existir, uma mensagem só com isso: a primeira
-  linha em negrito ("Contexto no limite.") e as duas opções numeradas.
-- **Resumo automático**: se a conversa recomeçou de um, o limite já passou e o
-  resumo perde detalhe (caminhos, números, o que já foi verificado). Antes de
-  qualquer outra coisa, reler o arquivo de contexto e o `git status`/`git
-  diff`, e só então avisar e perguntar como na fase vermelha. O que o resumo
-  afirma e não está no disco é hipótese.
-- **Ponto de parada** é um passo terminado: um commit feito, o diff parado
-  esperando o ok, ou o texto do commit entregue onde o Claude não commita.
-  **Nunca commitar para chegar nele.** Sem ponto de parada perto, escolher o
-  lugar de onde a sessão nova consiga se orientar sozinha. Nunca parar no meio
-  de uma edição.
-- **No ponto de parada**, reescrever o arquivo de contexto que o `CLAUDE.md` do
-  projeto indicar (se não indicar, um `CTX.md` na raiz, no
-  `.git/info/exclude`) com onde paramos, o que está pendente, as decisões e o
-  próximo passo: tudo o que a sessão nova precisa para retomar sem esta
-  conversa. Se o arquivo for versionado, a reescrita entra na branch em
-  andamento: junto com o diff que espera o ok ou, se o commit já foi feito,
-  num commit novo que também espera o ok (onde o Claude não commita, entra no
-  texto do commit entregue). Sem branch aberta, fica sem commit e a entrega
-  diz em que commit ele vai entrar (normalmente o primeiro da próxima branch).
-- **Depois, a mensagem de entrega**, que é o recibo da pessoa. Ela aponta para
-  o arquivo de contexto em vez de repeti-lo, e diz:
-  - o que foi feito e o que falta;
-  - o estado do Git: a branch, o que está sem commit (com o texto do commit,
-    se ficou pendente), commit sem push, PR para abrir ou mergear;
-  - o que ficou rodando (API, servidor, navegador de teste) ou foi encerrado;
-  - o que só a pessoa pode fazer: decidir, mergear, conferir na tela;
-  - a frase para abrir a sessão nova, por exemplo: "lê o `CTX.md` e continua
-    do passo 2".
-
-  Ela termina sugerindo o `/clear`. **Quem limpa é a pessoa, nunca o Claude**:
-  tela limpa sem essa mensagem deixa ela sem saber o que foi feito nem o que
-  falta.
-
-## Trocar de modelo ou de esforço
-
-- **O Claude não troca o próprio modelo nem o esforço.** O app recusa: uma
-  sessão não pode mudar o preço dos próprios turnos. Quem troca é a pessoa, no
-  menu do app.
-- **As regras falam em papel, o Claude dá o nome.** Aqui e nos arquivos de
-  regra, modelo e esforço são papéis, porque os nomes mudam com o tempo:
-  - **modelo:** "o que decide" (desenho, diagnóstico, defeito difícil), "o que
-    executa" (plano já aprovado), "o leve" (tarefa mecânica, sem escolha);
-  - **esforço:** "pouco" (tarefa mecânica), "normal", "o máximo" (decisão
-    difícil, correção acima de custo).
-
-  Ao sugerir uma troca, o Claude traduz os dois papéis para os **nomes exatos
-  que o menu da pessoa mostra**: o modelo e o nível de esforço, como aparecem
-  lá. O esforço padrão muda de um modelo para outro, então ele diz o nível
-  mesmo quando é o padrão. Nunca só "um modelo menor" ou "menos esforço": a
-  pessoa precisa saber o que clicar.
-- **O Claude não vê o plano da pessoa.** A sessão diz qual modelo ele é e
-  quais são os modelos atuais em geral, não quais aparecem no menu dela (quem
-  é gratuito não tem todos; nem todo plano tem o mais forte). Por isso:
-  - na primeira sugestão de troca, se o arquivo pessoal ou a memória do
-    projeto não disserem, perguntar quais modelos e níveis de esforço o menu
-    mostra, e guardar a resposta na memória;
-  - traduzir o papel para o melhor nome **que ela tem**, escolhido pela
-    fronteira (próxima regra): sem a opção ideal no menu dela, a mais barata
-    da fronteira que ainda atenda o nível da tarefa;
-  - se a pessoa disser que o nome sugerido não existe no menu (modelo novo,
-    plano mudou), perguntar de novo e atualizar a memória.
-- **A regra é a maior nota pelo menor custo para a tarefa.** A cada passo o
-  Claude julga o nível que a tarefa exige, diz esse nível à pessoa em uma
-  linha, e escolhe na fronteira de `modelos.md` a opção mais barata que
-  atende esse nível, entre o que o menu dela tem. Opção dominada (outra dá
-  nota ≥ por custo ≤) não se sugere. A tabela traz a data da pesquisa: se
-  passou de 14 dias, o Claude diz que está velha, uma vez por sessão, ao
-  sugerir a troca. Ela chega em toda sessão por esta linha:
-
-@modelos.md
-
-- **A troca é na fronteira da sessão, nunca no meio.** O cache é por modelo, e
-  trocar no meio paga a conversa inteira de novo. Com a ferramenta de
-  sessões, a troca é uma filha (§Sessão principal e filhas). Sem ela, a
-  sequência: arquivo de contexto → mensagem de entrega com o modelo e o
-  esforço sugeridos → `/clear` → menu → a sessão nova lê o arquivo de
-  contexto. Modelo de janela menor só depois do `/clear`.
-- **O Claude avisa nos dois sentidos, só quando o passo muda:** baixar quando a
-  próxima tarefa é simples, subir quando a simples acabou e a próxima pede
-  decisão. Nunca a cada resposta: aviso repetido ensina a ignorar.
-- **Plano em passos (quando houver):** cada passo sai com o modelo e o esforço
-  dele, no plano e no arquivo de contexto. Ao entrar num passo cuja indicação
-  difere da sessão atual, o Claude pede a troca no fim da mensagem, com botões:
-  "Parar aqui e trocar para X · esforço Y" ou "Continuar como está". Onde não
-  houver botões, uma linha em negrito e as duas opções numeradas.
-- **O passo no arquivo de contexto traz o que o leve precisa** para
-  seguir sem a conversa: o arquivo, o método, o que fica pronto no fim, e o
-  que não é dele decidir (aí ele para e pede o que decide).
-
-## Sessão principal e filhas
-
-Onde existe a ferramenta de abrir sessões, a pessoa conversa com uma sessão só,
-e o código de cada passo vai para uma filha no modelo do passo.
-
-- **A principal fica no "o que decide" · "o máximo".** Ela planeja com a
-  pessoa, decide e confere. Só leva `/clear` quando fecha uma etapa ou quando
-  o contexto enche (§Contexto cheio).
-- **A filha abre já no modelo e esforço do passo**, com tudo no brief, porque
-  começa sem a conversa: o plano fechado (arquivos, métodos, costuras pelo
-  nome, testes, sabotagem, a conferência) e a instrução "pare no diff e em
-  toda decisão; responda à sessão principal, não à pessoa". O plano inteiro
-  fica só no brief.
-- **A linha da filha entra no arquivo de contexto quando ela abre**, não só no
-  fechamento: id ou nome, passo, branch e estado (rodando, parada no diff,
-  parada em decisão). É o `/clear` forçado, de contexto cheio, que pega a filha
-  no meio; sem a linha, a sessão nova nem sabe que ela existe.
-- **A filha para no diff e em toda decisão.** A parada volta para a principal,
-  que leva a pergunta à pessoa e devolve a resposta. A pessoa não responde nas
-  filhas. Filha no "o leve" que topa com uma decisão para, não decide.
-- **Enquanto a filha roda, a principal não edita arquivo naquele checkout**,
-  só lê. Duas filhas ao mesmo tempo, só em árvores de trabalho separadas, e
-  isso é decisão do projeto, não deste padrão.
-- **Antes de dizer que o passo está pronto, a principal confere o diff da
-  filha contra o plano** (a conferência do §Plano antes do código). Passo
-  mergeado: ela arquiva a filha e tira a linha do arquivo de contexto.
