@@ -13,6 +13,14 @@ moram junto da skill, em `regras-vercel.md`.
 2. Ler os arquivos pedidos, ou perguntar quais.
 3. Conferir cada regra e responder no formato `arquivo:linha - problema`, como
    o arquivo de regras pede.
+4. **Revisão do site inteiro** (antes de publicar, auditoria geral): rodar
+   também a busca de padrão antigo do Modern Web Guidance, na mesma versão
+   da skill `padrao:web-moderna`:
+   `DISABLE_TELEMETRY=1 npx -y modern-web-guidance@1.0.1 legacy-scan <pasta> --json`.
+   Cada achado traz `keepWhen`/`dropWhen`: descartar o falso positivo
+   (fallback de propósito, código de terceiro) e listar o resto no mesmo
+   formato. Ele cobre só parte do guia, então "nada achado" não é "tudo
+   moderno". Revisão de uma tela ou componente só não roda o scan.
 
 As regras escritas para React (`onClick`, `useState`, hidratação) só se aplicam
 quando a tela tiver script. Site estático não tem.

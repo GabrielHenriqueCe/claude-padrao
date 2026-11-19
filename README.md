@@ -17,6 +17,7 @@ claude-padrao/
         ├── depurar/                  método para caçar a causa de um defeito
         ├── revisar-csharp/           checklist de C# e Clean Architecture
         ├── revisar-interface/        revisão de tela: acessibilidade, foco, animação
+        ├── web-moderna/              escrever HTML, CSS e JS pelo Modern Web Guidance
         ├── fechar-sessao/            contexto cheio: avisar, parar, arquivo de contexto, entrega
         ├── trocar-modelo/            sugerir modelo e esforço pela fronteira de nota × custo
         └── sessao-filha/             o código de um passo numa sessão filha
@@ -59,8 +60,8 @@ claude plugin install padrao@claude-padrao
 ```
 
 Ficam como `/padrao:depurar`, `/padrao:revisar-csharp`,
-`/padrao:revisar-interface`, `/padrao:fechar-sessao`, `/padrao:trocar-modelo`
-e `/padrao:sessao-filha`, e o Claude também as usa sozinho quando a tarefa é
+`/padrao:revisar-interface`, `/padrao:web-moderna`, `/padrao:fechar-sessao`,
+`/padrao:trocar-modelo` e `/padrao:sessao-filha`, e o Claude também as usa sozinho quando a tarefa é
 do assunto.
 
 ## Num projeto
@@ -125,6 +126,12 @@ regras de interface publicada pela Vercel (licença MIT, em `LICENSE-vercel`).
 Não tem nada a ver com hospedar na Vercel: as regras valem para qualquer tela
 web — site estático, React ou o front em WebView2. A cópia é fixa em
 `regras-vercel.md`, para o que roda ser o que foi revisado.
+
+`web-moderna` é o outro momento: em vez de revisar o que já está escrito, ela
+consulta o [Modern Web Guidance](https://developer.chrome.com/docs/modern-web-guidance/get-started)
+(Chrome, Edge e Firefox; Apache-2.0) antes de escrever. Chama o CLI do npm
+pela versão fixa, que traz os guias dentro, e com a telemetria desligada. Precisa
+do **Node.js** e de rede na primeira chamada de cada versão.
 
 ## De onde vieram algumas regras
 
